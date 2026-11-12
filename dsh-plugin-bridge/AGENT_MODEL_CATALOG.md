@@ -864,3 +864,110 @@ qwen3-omni-flash
 qwen3-vl-235b-a22b-instruct
 qwen3-vl-plus
 qwen3.5-0.8b
+qwen3.5-397b
+qwen3.5-397b-a17b
+qwen3.5-9b
+qwen3.5-flash
+qwen3.5-omni-flash
+qwen3.5-omni-plus
+qwen3.5-plus
+qwen3.6-27b
+qwen3.6-35b-a3b
+qwen3.6-max-preview
+qwen3.6-plus
+qwen3.7-flash
+qwen3.7-max
+qwen3.7-plus
+qwen3.8-27b
+qwen3.8-27b-omnimerge-v6
+qwen3.8-27b-swift
+qwen3.8-flash
+qwen3.8-flash-next
+qwen3.8-max
+qwen3.8-omni-flash
+qwen3guard-gen-0.6b
+qwen3guard-gen-8b
+qwq-32b
+r1-distill-qwen-32b
+riva-translate-4b-instruct-v2
+rnj-1
+rocinante-x-12b
+sea-guard
+sensenova-6.8-flash-lite
+skyfall-31b-v4.2
+step-3.5-flash
+step-3.7-flash
+tencent-hy4-preview
+thea-rp-3b-25r
+thedrummer-behemoth-128b-v3-q4-k-m
+tiny-aya-earth
+tiny-aya-fire
+tiny-aya-global
+tiny-aya-water
+typhoon-2.5-30b-a3b-instruct
+unmoderated-gpt
+voxtral-small
+voxtral-small-2507
+voxtral-small-latest
+wb-2balanced-model
+wb-2deepseek-v4.1-flash
+wb-2deepseek-v4.1-flash-sg
+wb-2fast-model
+wb-2gemini-3.8-flash
+wb-2glm-5.2
+wb-2glm-5.3
+wb-2glm-5.3-flash
+wb-2gpt-5.4
+wb-2gpt-5.5
+wb-2gpt-5.6-luna
+wb-2gpt-5.6-sol
+wb-2gpt-5.6-terra
+wb-2gpt-6-astra
+wb-2gpt-6-luna
+wb-2gpt-6-sol
+wb-2gpt-6.1-sol
+wb-2grok-4.7
+wb-2hy3
+wb-2hy4-preview
+wb-2hy4free
+wb-2hy4std
+wb-2kimi-k3
+wb-2kimi-k3.1-pro
+wb-2kimi-k3.1-pro-highspeed
+wb-2max-model
+wb-2minimax-m3.1-flash
+wb-2primary-model
+wb-cndeepseek-v4-pro
+wb-cndeepseek-v4.1-flash
+wb-cnglm-5.2
+wb-cnglm-5.3
+wb-cnglm-5.3-flash
+wb-cnhy3
+wb-cnhy3-x
+wb-cnhy4free
+wb-cnhy4std
+wb-cnkimi-k2.8-preview
+wb-cnkimi-k3-1
+wb-cnkimi-k3.1-pro
+wb-cnmimo-v2.6-pro
+wb-cnminimax-m3.1-flash
+wb-cnspace-bunny
+wb-cnstep-5-preview
+xiaomi-mimo-v2.6-flash
+```
+
+---
+
+相关文件：[model-integration-audit.md](<model-integration-audit.md>) · [final-status.md](<final-status.md>) · [dsh-plugin-integration-final.json](<dsh-plugin-integration-final.json>) · [dsh-plugin-registration.json](<dsh-plugin-registration.json>) · [freellmapi-restart-status.md](<freellmapi-restart-status.md>) · [models-0.16.23.json](<models-0.16.23.json>)（旧快照） · [all-models.txt](<all-models.txt>)（290 行历史清单）。
+## 9. 零 token 连通性结论（修正版，2026-11-12）
+
+> 完整报告：[model-connectivity-zero-token.md](<model-connectivity-zero-token.md>) · 结构化数据：[model-connectivity-zero-token.json](<model-connectivity-zero-token.json>)。
+> **0 次** `chat/completions`、**0 inference token**；仅 GET 目录/控制面 + 管理鉴权 + 只读 DB + 历史日志。真实生成响应属于需 token 的验证层，本轮未复测。
+
+- 代表 ID 低速串行检索：7/7 返回 200（首轮 383 并发 GET 触发 429 限流，已改为目录字段判定；详见修正说明）。
+- 路由就绪 `ready_zero_token`：120 个；确定不可用：258 个（no_key 258、disabled 0、no_models 0、unavailable_other 0）；exhausted 0；available_unknown 5。
+- 历史实测 200（既有证据）：5 个：`glm-5.3-flash`、`ofmbaiduernie-5.5-flash-previewfree`、`ofmliquidlfm-3-1.7bfree`、`wb-2fast-model`、`wb-cnhy4free`。
+- 控制面：bridge/grok/glm/ofm/builtin 全部 OK。
+- 按 `verdict` 选模型：`ready_zero_token` + `historical_200` 优先；`no_key`/`disabled`/`no_models` 直接排除；`exhausted`/`available_unknown`/无历史 200 的 `ready_zero_token` 属路由就绪但真实生成未在本轮复测。
+- 复测：`node probe-model-connectivity-zero-token.mjs` 重建 [model-connectivity-zero-token.md](<model-connectivity-zero-token.md>) 与 JSON；要确认真实生成再对目标模型发 `max_tokens=1` 的 `chat/completions`。
+

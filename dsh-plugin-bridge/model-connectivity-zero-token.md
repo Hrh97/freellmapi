@@ -1,11 +1,11 @@
 # FreeLLMAPI 模型连通性报告（零 inference token · 修正版）
 
-> 生成时间：2026-11-12T10:11:23.471Z · 版本 0.16.23 · 统一入口 `http://127.0.0.1:31415/v1`
+> 生成时间：2026-11-12T10:20:11.656Z · 版本 0.16.23 · 统一入口 `http://127.0.0.1:31415/v1`
 > 本轮 **0 次** `/v1/chat/completions`、**0 次** provider 推理、**0 inference token**。仅 GET 目录/控制面 + 一次 `POST /api/auth/desktop-session` 管理鉴权 + 只读 DB 快照 + 历史日志。
 
 ## 修正说明
 
-首轮 383 个并发 GET /v1/models/:id 触发 FreeLLMAPI 429 限流，268 条被误标为 catalog_error；串行复测 8/8 返回 200，证明是限速而非模型不可用。修正版以 /v1/models 目录行的 available / unavailable_reason / execution_status 字段为唯一判据，仅对 18 个代表 ID 做低速串行检索。
+首轮 383 个并发 GET /v1/models/:id 触发 FreeLLMAPI 429 限流，268 条被误标为 catalog_error；串行复测 8/8 返回 200，证明是限速而非模型不可用。修正版以 /v1/models 目录行的 available / unavailable_reason / execution_status 字段为唯一判据，仅对 9 个代表 ID 做低速串行检索。
 
 目录行字段是 FreeLLMAPI 自己的判定结果，零 token 且确定性最高；逐个 GET 只用于验证 retrieve 路由可用，不作为可用性判据。
 
@@ -19,7 +19,7 @@
 | 待真实生成确认 | 120 | `available_unknown` 5 + 路由就绪但无历史 200 证据 115。 |
 
 - 历史实测 200（既有证据，本轮未重跑）：**5 个** → `glm-5.3-flash`、`ofmbaiduernie-5.5-flash-previewfree`、`ofmliquidlfm-3-1.7bfree`、`wb-2fast-model`、`wb-cnhy4free`
-- 代表 ID 检索：9 个低速串行 `GET /v1/models/:id`，成功 7（9/9）。
+- 代表 ID 检索：7 个低速串行 `GET /v1/models/:id`，成功 7/7。
 - 控制面连通：bridge OK、grok OK、glm OK、ofm OK、builtin/api-health OK。
 
 真实 provider 生成响应属于需 token 的验证层；本轮按零 token 约束未发起 `chat/completions`。因此「路由就绪」不等于「上游一定返回内容」；对未列在历史 200 名单中的模型，结论是「路由/密钥/控制面就绪，真实生成未在本轮复测」。
@@ -27,7 +27,7 @@
 ## 零 token 测试了什么
 
 1. `GET /v1/models` 全量目录（权威字段 `available` / `unavailable_reason` / `execution_status`）+ `?available=true` + `?execution_status=ready|exhausted|needsKey` 过滤交叉核对。
-2. 对 9 个代表 ID 做低速串行 `GET /v1/models/:id`（180ms 间隔），确认 retrieve 路由不被 429 干扰。
+2. 对 7 个代表 ID 做低速串行 `GET /v1/models/:id`（1.1s 间隔、429 退避重试），确认 retrieve 路由不被 429 干扰。
 3. `POST /api/auth/desktop-session` 取管理 token 后 `GET /api/keys`、`/api/health`、`/api/models`、`/api/settings/version`。
 4. 控制面 GET：桥接器 `/healthz` 与 `/v1/models`、Our Free Model `/health` 与 `/v1/models`、Grok gateway `/v1/models`、两个 WorkBuddy shim `/healthz`。
 5. 只读 DB 既有快照：`models` 533 行、`model_probe_status` 0 行、`custom/source=user/enabled=1` 83 行（来源 [v3_read_probe_status.py](<v3_read_probe_status.py>)）；本轮未触发任何模型探测。
@@ -687,7 +687,7 @@ llama-prompt-guard-2-86m
 对目标模型发一次 `max_tokens=1` 的 `POST /v1/chat/completions`，仅消耗极少 token。本轮按零 token 约束未执行该命令。
 
 ```bash
-curl -s http://127.0.0.1:31415/v1/chat/completions -H "Authorization: Bearer ${FRELLMAPI_KEY}" -H "Content-Type: application/json" -d "{\"model\":\"wb-2fast-model\",\"messages\":[{\"role\":\"user\",\"content\":\"hi\"}],\"max_tokens\":1}"
+curl -s http://127.0.0.1:31415/v1/chat/completions -H 'Authorization: Bearer ${FRELLMAPI_KEY}' -H 'Content-Type: application/json' -d '{"model":"wb-2fast-model","messages":[{"role":"user","content":"hi"}],"max_tokens":1}'
 ```
 
 ## 相关文件
@@ -696,3 +696,4 @@ curl -s http://127.0.0.1:31415/v1/chat/completions -H "Authorization: Bearer ${F
 - [model-connectivity-zero-token.json](<model-connectivity-zero-token.json>)：结构化全量数据（含每个模型 verdict 与 retrieval_status）。
 - [probe-model-connectivity-zero-token.mjs](<probe-model-connectivity-zero-token.mjs>)：零 token 复测脚本，运行 `node probe-model-connectivity-zero-token.mjs` 即重建本文。
 - [model-integration-audit.md](<model-integration-audit.md>)、[final-status.md](<final-status.md>)、[freellmapi-restart-status.md](<freellmapi-restart-status.md>)。
+
