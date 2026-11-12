@@ -1,32 +1,37 @@
-# FreeLLMAPI 模型连通性报告（零 inference token）
+# FreeLLMAPI 模型连通性报告（零 inference token · 修正版）
 
-> 生成时间：2026-11-12T09:59:54.155Z · 版本 0.16.23 · 统一入口 `http://127.0.0.1:31415/v1`
-> 本轮 **0 次** `/v1/chat/completions`、**0 次** provider 推理、**0 inference token**。仅 GET 目录/控制面 + 一次 `POST /api/auth/desktop-session` 管理鉴权 + 只读 DB + 历史日志。
+> 生成时间：2026-11-12T10:11:23.471Z · 版本 0.16.23 · 统一入口 `http://127.0.0.1:31415/v1`
+> 本轮 **0 次** `/v1/chat/completions`、**0 次** provider 推理、**0 inference token**。仅 GET 目录/控制面 + 一次 `POST /api/auth/desktop-session` 管理鉴权 + 只读 DB 快照 + 历史日志。
+
+## 修正说明
+
+首轮 383 个并发 GET /v1/models/:id 触发 FreeLLMAPI 429 限流，268 条被误标为 catalog_error；串行复测 8/8 返回 200，证明是限速而非模型不可用。修正版以 /v1/models 目录行的 available / unavailable_reason / execution_status 字段为唯一判据，仅对 18 个代表 ID 做低速串行检索。
+
+目录行字段是 FreeLLMAPI 自己的判定结果，零 token 且确定性最高；逐个 GET 只用于验证 retrieve 路由可用，不作为可用性判据。
 
 ## 结论（直接回答）
 
-零 token 层可以给出确定结论，分三类：
-
 | 类别 | 数量 | 含义 |
 |---|---:|---|
-| 路由就绪 `ready_zero_token` | 110 | 目录可检索、`available=true`、`execution_status=ready`、对应控制面健康。零 token 层确定「能路由到可用 key」。 |
-| 确定不可用 | 268 | `no_key` 0、`disabled` 0、`no_models` 0、`unavailable_other` 0、`catalog_error` 268。 |
-| 待真实生成确认 | 111 | `exhausted` 0、`available_unknown` 5、路由就绪但无历史 200 证据 106。 |
+| 路由就绪 `ready_zero_token` | 120 | `available=true`、`execution_status=ready`、对应控制面健康。零 token 层确定「能路由到可用 key」。 |
+| 确定不可用 | 258 | `no_key` 258、`disabled` 0、`no_models` 0、`unavailable_other` 0。 |
+| 配额/密钥耗尽 `exhausted` | 0 | 有 key 但 `hasUsableKeyForModel` 为假（冷却/额度），零 token 层判为当前不可生成。 |
+| 待真实生成确认 | 120 | `available_unknown` 5 + 路由就绪但无历史 200 证据 115。 |
 
-- 历史实测 200（既有 token 探测，本轮未重跑）：**4 个** → `ofmbaiduernie-5.5-flash-previewfree`、`ofmliquidlfm-3-1.7bfree`、`wb-2fast-model`、`wb-cnhy4free`
-- 逐个模型目录检索：383 次 `GET /v1/models/:id`，成功 115。
+- 历史实测 200（既有证据，本轮未重跑）：**5 个** → `glm-5.3-flash`、`ofmbaiduernie-5.5-flash-previewfree`、`ofmliquidlfm-3-1.7bfree`、`wb-2fast-model`、`wb-cnhy4free`
+- 代表 ID 检索：9 个低速串行 `GET /v1/models/:id`，成功 7（9/9）。
 - 控制面连通：bridge OK、grok OK、glm OK、ofm OK、builtin/api-health OK。
 
 真实 provider 生成响应属于需 token 的验证层；本轮按零 token 约束未发起 `chat/completions`。因此「路由就绪」不等于「上游一定返回内容」；对未列在历史 200 名单中的模型，结论是「路由/密钥/控制面就绪，真实生成未在本轮复测」。
 
 ## 零 token 测试了什么
 
-1. `GET /v1/models` 全量目录 + `?available=true` + `?execution_status=ready|exhausted|needsKey` 过滤。
-2. 对全部 383 个公共 ID 逐个 `GET /v1/models/:id`（并发 16），验证目录可检索与 `available` / `unavailable_reason` / `execution_status` 字段。
+1. `GET /v1/models` 全量目录（权威字段 `available` / `unavailable_reason` / `execution_status`）+ `?available=true` + `?execution_status=ready|exhausted|needsKey` 过滤交叉核对。
+2. 对 9 个代表 ID 做低速串行 `GET /v1/models/:id`（180ms 间隔），确认 retrieve 路由不被 429 干扰。
 3. `POST /api/auth/desktop-session` 取管理 token 后 `GET /api/keys`、`/api/health`、`/api/models`、`/api/settings/version`。
 4. 控制面 GET：桥接器 `/healthz` 与 `/v1/models`、Our Free Model `/health` 与 `/v1/models`、Grok gateway `/v1/models`、两个 WorkBuddy shim `/healthz`。
-5. 只读 `freeapi.db` 既有快照：`models` 533 行、`model_probe_status` 0 行、`custom/source=user/enabled=1` 83 行（来源 [v3_read_probe_status.py](<v3_read_probe_status.py>)）；本轮未触发任何模型探测。
-6. 读取既有 [ofm-chat-probe.json](<ofm-chat-probe.json>)、[dsh-plugin-integration-final.json](<dsh-plugin-integration-final.json>)、[dsh-plugin-verification.json](<dsh-plugin-verification.json>)，复用之前已消耗的推理结果，不重跑。
+5. 只读 DB 既有快照：`models` 533 行、`model_probe_status` 0 行、`custom/source=user/enabled=1` 83 行（来源 [v3_read_probe_status.py](<v3_read_probe_status.py>)）；本轮未触发任何模型探测。
+6. 读取 [ofm-chat-probe.json](<ofm-chat-probe.json>)、[dsh-plugin-integration-final.json](<dsh-plugin-integration-final.json>)、[dsh-plugin-verification.json](<dsh-plugin-verification.json>) 与 [check-freellmapi.ps1](<check-freellmapi.ps1>) 自检记录，复用之前已消耗的推理结果，不重跑。
 
 源码判据（[freellmapi-asar/build/server.mjs](<freellmapi-asar/build/server.mjs>)）：
 
@@ -61,6 +66,30 @@
 | `shim_0_health` | 200 | 0 |
 | `shim_1_health` | 200 | 0 |
 
+## 目录字段分布
+
+### available
+
+| 值 | 数量 |
+|---|---:|
+| `true` | 125 |
+| `false` | 258 |
+
+### unavailable_reason
+
+| 值 | 数量 |
+|---|---:|
+| `null` | 125 |
+| `no_key` | 258 |
+
+### execution_status
+
+| 值 | 数量 |
+|---|---:|
+| `null` | 5 |
+| `ready` | 120 |
+| `needsKey` | 258 |
+
 ## 分组计数
 
 | 来源 | 模型数 |
@@ -75,10 +104,10 @@
 | verdict | 数量 |
 |---|---:|
 | available_unknown | 5 |
-| ready_zero_token | 110 |
-| catalog_error | 268 |
+| ready_zero_token | 120 |
+| no_key | 258 |
 
-## 确定可用（零 token 层：路由就绪 110 个）
+## 确定可用（零 token 层：路由就绪 120 个）
 
 ```text
 glm-4.5
@@ -189,43 +218,9 @@ wb-cnmimo-v2.6-pro
 wb-cnminimax-m3.1-flash
 wb-cnspace-bunny
 wb-cnstep-5-preview
+north-mini-code
 gemini-2.5-flash-lite
 nemotron-3-nano-30b-reasoning
-```
-
-## 历史实测 200（既有证据，4 个）
-
-```text
-ofmbaiduernie-5.5-flash-previewfree
-ofmliquidlfm-3-1.7bfree
-wb-2fast-model
-wb-cnhy4free
-```
-
-## 确定不可用（268 个）
-
-### no_key 0
-
-```text
-
-```
-
-### disabled 0
-
-```text
-
-```
-
-### no_models 0
-
-```text
-
-```
-
-### unavailable_other / catalog_error
-
-```text
-north-mini-code
 lfm2.5-2.6b
 llama-3.3-70b
 mistral-small-3.2-24b
@@ -235,6 +230,23 @@ qwen3guard-gen-0.6b
 allam-2-7b
 llama-prompt-guard-2-22m
 llama-prompt-guard-2-86m
+```
+
+## 历史实测 200（既有证据，5 个）
+
+```text
+glm-5.3-flash
+ofmbaiduernie-5.5-flash-previewfree
+ofmliquidlfm-3-1.7bfree
+wb-2fast-model
+wb-cnhy4free
+```
+
+## 确定不可用（258 个）
+
+### no_key 258
+
+```text
 qwen3.8-max
 qwen3.8-flash
 qwen3.8-flash-next
@@ -495,9 +507,33 @@ cerebras-gpt-111m-instruct
 pythia-70m-deduped
 ```
 
+### disabled 0
+
+```text
+
+```
+
+### no_models 0
+
+```text
+
+```
+
+### unavailable_other
+
+```text
+
+```
+
+## 配额/密钥耗尽（exhausted 0）
+
+```text
+
+```
+
 ## 待真实生成确认
 
-### exhausted / available_unknown
+### available_unknown 5
 
 ```text
 auto
@@ -507,7 +543,7 @@ claude-sonnet-4-5
 claude-haiku-4-5
 ```
 
-### 路由就绪但无历史 200 证据（106）
+### 路由就绪但无历史 200 证据（115）
 
 ```text
 glm-4.5
@@ -519,7 +555,6 @@ glm-5-turbo
 glm-5.1
 glm-5.2
 glm-5.3
-glm-5.3-flash
 glm-5.3-flashx
 gemini-3.8-flash
 gemini-flash
@@ -614,11 +649,21 @@ wb-cnmimo-v2.6-pro
 wb-cnminimax-m3.1-flash
 wb-cnspace-bunny
 wb-cnstep-5-preview
+north-mini-code
 gemini-2.5-flash-lite
 nemotron-3-nano-30b-reasoning
+lfm2.5-2.6b
+llama-3.3-70b
+mistral-small-3.2-24b
+qwen2.5-vl-72b
+qwen3guard-gen-8b
+qwen3guard-gen-0.6b
+allam-2-7b
+llama-prompt-guard-2-22m
+llama-prompt-guard-2-86m
 ```
 
-## Our Free Model 既有上游异常（历史 token 探测）
+## Our Free Model 既有上游异常（历史 token 探测，16 条）
 
 - `deepseek-v4.1-flash-free` → 502：OpenCode 免费车道推理需要本机 Bun：请安装 Bun（https://bun.sh 或 npm i -g bun）后重试，或把 Bun 可执行文件路径写入 OUR_FREE_MODEL_BUN 环境变量。/ Install Bun or set OUR_FREE_MODEL_BUN to its executable path (OUR_FREE_MODEL_FREE_TRANSPORT=node restores the legacy transport).
 - `glm-5.3-flash-free` → 502：OpenCode 免费车道推理需要本机 Bun：请安装 Bun（https://bun.sh 或 npm i -g bun）后重试，或把 Bun 可执行文件路径写入 OUR_FREE_MODEL_BUN 环境变量。/ Install Bun or set OUR_FREE_MODEL_BUN to its executable path (OUR_FREE_MODEL_FREE_TRANSPORT=node restores the legacy transport).
@@ -641,8 +686,13 @@ nemotron-3-nano-30b-reasoning
 
 对目标模型发一次 `max_tokens=1` 的 `POST /v1/chat/completions`，仅消耗极少 token。本轮按零 token 约束未执行该命令。
 
+```bash
+curl -s http://127.0.0.1:31415/v1/chat/completions -H "Authorization: Bearer ${FRELLMAPI_KEY}" -H "Content-Type: application/json" -d "{\"model\":\"wb-2fast-model\",\"messages\":[{\"role\":\"user\",\"content\":\"hi\"}],\"max_tokens\":1}"
+```
+
 ## 相关文件
 
-- [AGENTS.md](<AGENTS.md>)：完整 383 个模型配置与维护规则（已追加第 9 节零 token 结论）。
-- [model-connectivity-zero-token.json](<model-connectivity-zero-token.json>)：本报告结构化全量数据（含每个模型 verdict）。
-- [model-integration-audit.md](<model-integration-audit.md>)、[model-connectivity-zero-token.md](<model-connectivity-zero-token.md>)、[final-status.md](<final-status.md>)。
+- [AGENTS.md](<AGENTS.md>)：完整 383 个模型配置与维护规则（第 9 节为零 token 结论）。
+- [model-connectivity-zero-token.json](<model-connectivity-zero-token.json>)：结构化全量数据（含每个模型 verdict 与 retrieval_status）。
+- [probe-model-connectivity-zero-token.mjs](<probe-model-connectivity-zero-token.mjs>)：零 token 复测脚本，运行 `node probe-model-connectivity-zero-token.mjs` 即重建本文。
+- [model-integration-audit.md](<model-integration-audit.md>)、[final-status.md](<final-status.md>)、[freellmapi-restart-status.md](<freellmapi-restart-status.md>)。

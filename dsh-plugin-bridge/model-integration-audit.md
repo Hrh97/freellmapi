@@ -30,6 +30,8 @@
 - [verify-dsh-plugin-integration.mjs](<verify-dsh-plugin-integration.mjs>) 最终验证：bridge `/v1/models` 200、62 ids；FreeLLMAPI `/v1/models` 200、383 ids（原 321 + 62）；其中 WorkBuddy 44、Our Free Model 18。
 - 非流式 chat 五个代表模型全部 200：`wb-cn/hy4free`、`wb-cnhy4free`、`wb-2/fast-model`、`ofm/baidu/ernie-5.5-flash-preview:free`、`ofm/liquid/lfm-3-1.7b:free`。
 - WorkBuddy `stream:true` 经桥接器把 reasoning_content 提升到 delta.content 后返回 `text/event-stream` 200。
-- 最终快照 [dsh-plugin-integration-final.json](<dsh-plugin-integration-final.json>)；注册清单 [dsh-plugin-registration.json](<dsh-plugin-registration.json>)；逐模型探测 [ofm-chat-probe.json](<ofm-chat-probe.json>)。
-- 一键维护脚本 [integrate-dsh-plugin-models.ps1](<integrate-dsh-plugin-models.ps1>) 串联 WorkBuddy 凭据刷新、CIM 重启桥接器、FreeLLMAPI 注册、OFM 集成与最终验证。
+- 最终快照 [dsh-plugin-integration-final.json](<dsh-plugin-integration-final.json>)；注册清单 [dsh-plugin-registration.json](<dsh-plugin-registration.json>)；逐模型探测 [ofm-chat-probe.json](<ofm-chat-probe.json>)。给其他 Agent 读取的完整模型配置在 [AGENTS.md](<AGENTS.md>)，由 [collect-model-catalog.mjs](<collect-model-catalog.mjs>) 从运行态生成，含全部 383 个模型 ID 与分组、配置示例、维护规则。
+- 零 token 连通性报告 [model-connectivity-zero-token.md](<model-connectivity-zero-token.md>) 与结构化数据 [model-connectivity-zero-token.json](<model-connectivity-zero-token.json>)：0 次 chat/completions、383 次目录检索、路由就绪 110 个、确定不可用 268 个、历史实测 200 4 个。
+- 修正版零 token 报告（[model-connectivity-zero-token.md](<model-connectivity-zero-token.md>)）：首轮 383 并发 GET 触发 429 导致 268 条误标 catalog_error，串行复测 8/8 为 200；改用目录字段判定后：ready 120、不可用 258、exhausted 0、历史实测 200 5。
+- 一键维护脚本 [integrate-dsh-plugin-models.ps1](<integrate-dsh-plugin-models.ps1>) 串联完整 5 步，仅首次部署或改桥接器代码时需要。日常用 [sync-dsh-plugin-models.mjs](<sync-dsh-plugin-models.mjs>)（双击 [同步插件模型.cmd](<同步插件模型.cmd>)）：幂等，先探测 WorkBuddy shim 是否仍带旧 token 存活，只在失效时重新扫描并 /reload；桥接器实时拉上游 /v1/models，只有 FreeLLMAPI 缺新模型 ID 时才补注册。
 - 继续复检 [final-status.md](<final-status.md>)：非流式 chat 5/5 HTTP 200，stream:true HTTP 200 且 content-type=text/event-stream；显式端口复检 6/6 reachable；4 个 Node 助手语法检查 exit 0。
