@@ -1,0 +1,345 @@
+{
+  "modelsStatus": 200,
+  "count": 18,
+  "rows": [
+    {
+      "model": "deepseek-v4.1-flash-free",
+      "direct": {
+        "status": 502,
+        "contentType": "application/json",
+        "content": null,
+        "error": "OpenCode 免费车道推理需要本机 Bun：请安装 Bun（https://bun.sh 或 npm i -g bun）后重试，或把 Bun 可执行文件路径写入 OUR_FREE_MODEL_BUN 环境变量。/ Install Bun or set OUR_FREE_MODEL_BUN to its executable path (OUR_FREE_MODEL_FREE_TRANSPORT=node restores the legacy transport).",
+        "head": "{\"error\":{\"message\":\"OpenCode 免费车道推理需要本机 Bun：请安装 Bun（https://bun.sh 或 npm i -g bun）后重试，或把 Bun 可执行文件路径写入 OUR_FREE_MODEL_BUN 环境变量。/ Install Bun or set OUR_FREE_MODEL_BUN to its executable path (OUR_FREE_MODEL_FREE_TRANSPOR"
+      },
+      "bridge": {
+        "status": 502,
+        "contentType": "application/json; charset=utf-8",
+        "content": null,
+        "error": "OpenCode 免费车道推理需要本机 Bun：请安装 Bun（https://bun.sh 或 npm i -g bun）后重试，或把 Bun 可执行文件路径写入 OUR_FREE_MODEL_BUN 环境变量。/ Install Bun or set OUR_FREE_MODEL_BUN to its executable path (OUR_FREE_MODEL_FREE_TRANSPORT=node restores the legacy transport).",
+        "head": "{\"error\":{\"message\":\"OpenCode 免费车道推理需要本机 Bun：请安装 Bun（https://bun.sh 或 npm i -g bun）后重试，或把 Bun 可执行文件路径写入 OUR_FREE_MODEL_BUN 环境变量。/ Install Bun or set OUR_FREE_MODEL_BUN to its executable path (OUR_FREE_MODEL_FREE_TRANSPOR"
+      }
+    },
+    {
+      "model": "glm-5.3-flash-free",
+      "direct": {
+        "status": 502,
+        "contentType": "application/json",
+        "content": null,
+        "error": "OpenCode 免费车道推理需要本机 Bun：请安装 Bun（https://bun.sh 或 npm i -g bun）后重试，或把 Bun 可执行文件路径写入 OUR_FREE_MODEL_BUN 环境变量。/ Install Bun or set OUR_FREE_MODEL_BUN to its executable path (OUR_FREE_MODEL_FREE_TRANSPORT=node restores the legacy transport).",
+        "head": "{\"error\":{\"message\":\"OpenCode 免费车道推理需要本机 Bun：请安装 Bun（https://bun.sh 或 npm i -g bun）后重试，或把 Bun 可执行文件路径写入 OUR_FREE_MODEL_BUN 环境变量。/ Install Bun or set OUR_FREE_MODEL_BUN to its executable path (OUR_FREE_MODEL_FREE_TRANSPOR"
+      },
+      "bridge": {
+        "status": 502,
+        "contentType": "application/json; charset=utf-8",
+        "content": null,
+        "error": "OpenCode 免费车道推理需要本机 Bun：请安装 Bun（https://bun.sh 或 npm i -g bun）后重试，或把 Bun 可执行文件路径写入 OUR_FREE_MODEL_BUN 环境变量。/ Install Bun or set OUR_FREE_MODEL_BUN to its executable path (OUR_FREE_MODEL_FREE_TRANSPORT=node restores the legacy transport).",
+        "head": "{\"error\":{\"message\":\"OpenCode 免费车道推理需要本机 Bun：请安装 Bun（https://bun.sh 或 npm i -g bun）后重试，或把 Bun 可执行文件路径写入 OUR_FREE_MODEL_BUN 环境变量。/ Install Bun or set OUR_FREE_MODEL_BUN to its executable path (OUR_FREE_MODEL_FREE_TRANSPOR"
+      }
+    },
+    {
+      "model": "longcat-2.5-free",
+      "direct": {
+        "status": 502,
+        "contentType": "application/json",
+        "content": null,
+        "error": "OpenCode 免费车道推理需要本机 Bun：请安装 Bun（https://bun.sh 或 npm i -g bun）后重试，或把 Bun 可执行文件路径写入 OUR_FREE_MODEL_BUN 环境变量。/ Install Bun or set OUR_FREE_MODEL_BUN to its executable path (OUR_FREE_MODEL_FREE_TRANSPORT=node restores the legacy transport).",
+        "head": "{\"error\":{\"message\":\"OpenCode 免费车道推理需要本机 Bun：请安装 Bun（https://bun.sh 或 npm i -g bun）后重试，或把 Bun 可执行文件路径写入 OUR_FREE_MODEL_BUN 环境变量。/ Install Bun or set OUR_FREE_MODEL_BUN to its executable path (OUR_FREE_MODEL_FREE_TRANSPOR"
+      },
+      "bridge": {
+        "status": 502,
+        "contentType": "application/json; charset=utf-8",
+        "content": null,
+        "error": "OpenCode 免费车道推理需要本机 Bun：请安装 Bun（https://bun.sh 或 npm i -g bun）后重试，或把 Bun 可执行文件路径写入 OUR_FREE_MODEL_BUN 环境变量。/ Install Bun or set OUR_FREE_MODEL_BUN to its executable path (OUR_FREE_MODEL_FREE_TRANSPORT=node restores the legacy transport).",
+        "head": "{\"error\":{\"message\":\"OpenCode 免费车道推理需要本机 Bun：请安装 Bun（https://bun.sh 或 npm i -g bun）后重试，或把 Bun 可执行文件路径写入 OUR_FREE_MODEL_BUN 环境变量。/ Install Bun or set OUR_FREE_MODEL_BUN to its executable path (OUR_FREE_MODEL_FREE_TRANSPOR"
+      }
+    },
+    {
+      "model": "iceman-free",
+      "direct": {
+        "status": 502,
+        "contentType": "application/json",
+        "content": null,
+        "error": "OpenCode 免费车道推理需要本机 Bun：请安装 Bun（https://bun.sh 或 npm i -g bun）后重试，或把 Bun 可执行文件路径写入 OUR_FREE_MODEL_BUN 环境变量。/ Install Bun or set OUR_FREE_MODEL_BUN to its executable path (OUR_FREE_MODEL_FREE_TRANSPORT=node restores the legacy transport).",
+        "head": "{\"error\":{\"message\":\"OpenCode 免费车道推理需要本机 Bun：请安装 Bun（https://bun.sh 或 npm i -g bun）后重试，或把 Bun 可执行文件路径写入 OUR_FREE_MODEL_BUN 环境变量。/ Install Bun or set OUR_FREE_MODEL_BUN to its executable path (OUR_FREE_MODEL_FREE_TRANSPOR"
+      },
+      "bridge": {
+        "status": 502,
+        "contentType": "application/json; charset=utf-8",
+        "content": null,
+        "error": "OpenCode 免费车道推理需要本机 Bun：请安装 Bun（https://bun.sh 或 npm i -g bun）后重试，或把 Bun 可执行文件路径写入 OUR_FREE_MODEL_BUN 环境变量。/ Install Bun or set OUR_FREE_MODEL_BUN to its executable path (OUR_FREE_MODEL_FREE_TRANSPORT=node restores the legacy transport).",
+        "head": "{\"error\":{\"message\":\"OpenCode 免费车道推理需要本机 Bun：请安装 Bun（https://bun.sh 或 npm i -g bun）后重试，或把 Bun 可执行文件路径写入 OUR_FREE_MODEL_BUN 环境变量。/ Install Bun or set OUR_FREE_MODEL_BUN to its executable path (OUR_FREE_MODEL_FREE_TRANSPOR"
+      }
+    },
+    {
+      "model": "inkling-2-small-free",
+      "direct": {
+        "status": 502,
+        "contentType": "application/json",
+        "content": null,
+        "error": "OpenCode 免费车道推理需要本机 Bun：请安装 Bun（https://bun.sh 或 npm i -g bun）后重试，或把 Bun 可执行文件路径写入 OUR_FREE_MODEL_BUN 环境变量。/ Install Bun or set OUR_FREE_MODEL_BUN to its executable path (OUR_FREE_MODEL_FREE_TRANSPORT=node restores the legacy transport).",
+        "head": "{\"error\":{\"message\":\"OpenCode 免费车道推理需要本机 Bun：请安装 Bun（https://bun.sh 或 npm i -g bun）后重试，或把 Bun 可执行文件路径写入 OUR_FREE_MODEL_BUN 环境变量。/ Install Bun or set OUR_FREE_MODEL_BUN to its executable path (OUR_FREE_MODEL_FREE_TRANSPOR"
+      },
+      "bridge": {
+        "status": 502,
+        "contentType": "application/json; charset=utf-8",
+        "content": null,
+        "error": "OpenCode 免费车道推理需要本机 Bun：请安装 Bun（https://bun.sh 或 npm i -g bun）后重试，或把 Bun 可执行文件路径写入 OUR_FREE_MODEL_BUN 环境变量。/ Install Bun or set OUR_FREE_MODEL_BUN to its executable path (OUR_FREE_MODEL_FREE_TRANSPORT=node restores the legacy transport).",
+        "head": "{\"error\":{\"message\":\"OpenCode 免费车道推理需要本机 Bun：请安装 Bun（https://bun.sh 或 npm i -g bun）后重试，或把 Bun 可执行文件路径写入 OUR_FREE_MODEL_BUN 环境变量。/ Install Bun or set OUR_FREE_MODEL_BUN to its executable path (OUR_FREE_MODEL_FREE_TRANSPOR"
+      }
+    },
+    {
+      "model": "flint-40b-free",
+      "direct": {
+        "status": 502,
+        "contentType": "application/json",
+        "content": null,
+        "error": "OpenCode 免费车道推理需要本机 Bun：请安装 Bun（https://bun.sh 或 npm i -g bun）后重试，或把 Bun 可执行文件路径写入 OUR_FREE_MODEL_BUN 环境变量。/ Install Bun or set OUR_FREE_MODEL_BUN to its executable path (OUR_FREE_MODEL_FREE_TRANSPORT=node restores the legacy transport).",
+        "head": "{\"error\":{\"message\":\"OpenCode 免费车道推理需要本机 Bun：请安装 Bun（https://bun.sh 或 npm i -g bun）后重试，或把 Bun 可执行文件路径写入 OUR_FREE_MODEL_BUN 环境变量。/ Install Bun or set OUR_FREE_MODEL_BUN to its executable path (OUR_FREE_MODEL_FREE_TRANSPOR"
+      },
+      "bridge": {
+        "status": 502,
+        "contentType": "application/json; charset=utf-8",
+        "content": null,
+        "error": "OpenCode 免费车道推理需要本机 Bun：请安装 Bun（https://bun.sh 或 npm i -g bun）后重试，或把 Bun 可执行文件路径写入 OUR_FREE_MODEL_BUN 环境变量。/ Install Bun or set OUR_FREE_MODEL_BUN to its executable path (OUR_FREE_MODEL_FREE_TRANSPORT=node restores the legacy transport).",
+        "head": "{\"error\":{\"message\":\"OpenCode 免费车道推理需要本机 Bun：请安装 Bun（https://bun.sh 或 npm i -g bun）后重试，或把 Bun 可执行文件路径写入 OUR_FREE_MODEL_BUN 环境变量。/ Install Bun or set OUR_FREE_MODEL_BUN to its executable path (OUR_FREE_MODEL_FREE_TRANSPOR"
+      }
+    },
+    {
+      "model": "opencode/nemotron-3.5-lightning-free",
+      "direct": {
+        "status": 502,
+        "contentType": "application/json",
+        "content": null,
+        "error": "model request failed: Invalid URL",
+        "head": "{\"error\":{\"message\":\"model request failed: Invalid URL\",\"type\":\"server_error\",\"code\":\"TRANSPORT\",\"param\":null}}"
+      },
+      "bridge": {
+        "status": 502,
+        "contentType": "application/json; charset=utf-8",
+        "content": null,
+        "error": "model request failed: Invalid URL",
+        "head": "{\"error\":{\"message\":\"model request failed: Invalid URL\",\"type\":\"server_error\",\"code\":\"TRANSPORT\",\"param\":null}}"
+      }
+    },
+    {
+      "model": "minimaxai/minimax-m3.1-flash",
+      "direct": {
+        "status": 502,
+        "contentType": "application/json",
+        "content": null,
+        "error": "model request failed: Invalid URL",
+        "head": "{\"error\":{\"message\":\"model request failed: Invalid URL\",\"type\":\"server_error\",\"code\":\"TRANSPORT\",\"param\":null}}"
+      },
+      "bridge": {
+        "status": 502,
+        "contentType": "application/json; charset=utf-8",
+        "content": null,
+        "error": "model request failed: Invalid URL",
+        "head": "{\"error\":{\"message\":\"model request failed: Invalid URL\",\"type\":\"server_error\",\"code\":\"TRANSPORT\",\"param\":null}}"
+      }
+    },
+    {
+      "model": "opencode/flint-40b-free",
+      "direct": {
+        "status": 502,
+        "contentType": "application/json",
+        "content": null,
+        "error": "model request failed: Invalid URL",
+        "head": "{\"error\":{\"message\":\"model request failed: Invalid URL\",\"type\":\"server_error\",\"code\":\"TRANSPORT\",\"param\":null}}"
+      },
+      "bridge": {
+        "status": 502,
+        "contentType": "application/json; charset=utf-8",
+        "content": null,
+        "error": "model request failed: Invalid URL",
+        "head": "{\"error\":{\"message\":\"model request failed: Invalid URL\",\"type\":\"server_error\",\"code\":\"TRANSPORT\",\"param\":null}}"
+      }
+    },
+    {
+      "model": "z-ai/glm-5.3-flash",
+      "direct": {
+        "status": 502,
+        "contentType": "application/json",
+        "content": null,
+        "error": "model request failed: Invalid URL",
+        "head": "{\"error\":{\"message\":\"model request failed: Invalid URL\",\"type\":\"server_error\",\"code\":\"TRANSPORT\",\"param\":null}}"
+      },
+      "bridge": {
+        "status": 502,
+        "contentType": "application/json; charset=utf-8",
+        "content": null,
+        "error": "model request failed: Invalid URL",
+        "head": "{\"error\":{\"message\":\"model request failed: Invalid URL\",\"type\":\"server_error\",\"code\":\"TRANSPORT\",\"param\":null}}"
+      }
+    },
+    {
+      "model": "stepfun-ai/step-5-preview",
+      "direct": {
+        "status": 502,
+        "contentType": "application/json",
+        "content": null,
+        "error": "model request failed: Invalid URL",
+        "head": "{\"error\":{\"message\":\"model request failed: Invalid URL\",\"type\":\"server_error\",\"code\":\"TRANSPORT\",\"param\":null}}"
+      },
+      "bridge": {
+        "status": 502,
+        "contentType": "application/json; charset=utf-8",
+        "content": null,
+        "error": "model request failed: Invalid URL",
+        "head": "{\"error\":{\"message\":\"model request failed: Invalid URL\",\"type\":\"server_error\",\"code\":\"TRANSPORT\",\"param\":null}}"
+      }
+    },
+    {
+      "model": "deepseek-ai/deepseek-v4.1-flash",
+      "direct": {
+        "status": 502,
+        "contentType": "application/json",
+        "content": null,
+        "error": "model request failed: Invalid URL",
+        "head": "{\"error\":{\"message\":\"model request failed: Invalid URL\",\"type\":\"server_error\",\"code\":\"TRANSPORT\",\"param\":null}}"
+      },
+      "bridge": {
+        "status": 502,
+        "contentType": "application/json; charset=utf-8",
+        "content": null,
+        "error": "model request failed: Invalid URL",
+        "head": "{\"error\":{\"message\":\"model request failed: Invalid URL\",\"type\":\"server_error\",\"code\":\"TRANSPORT\",\"param\":null}}"
+      }
+    },
+    {
+      "model": "opencode/glm-5.3-flash-free",
+      "direct": {
+        "status": 502,
+        "contentType": "application/json",
+        "content": null,
+        "error": "model request failed: Invalid URL",
+        "head": "{\"error\":{\"message\":\"model request failed: Invalid URL\",\"type\":\"server_error\",\"code\":\"TRANSPORT\",\"param\":null}}"
+      },
+      "bridge": {
+        "status": 502,
+        "contentType": "application/json; charset=utf-8",
+        "content": null,
+        "error": "model request failed: Invalid URL",
+        "head": "{\"error\":{\"message\":\"model request failed: Invalid URL\",\"type\":\"server_error\",\"code\":\"TRANSPORT\",\"param\":null}}"
+      }
+    },
+    {
+      "model": "opencode/nemotron-3.5-super-vl-free",
+      "direct": {
+        "status": 502,
+        "contentType": "application/json",
+        "content": null,
+        "error": "model request failed: Invalid URL",
+        "head": "{\"error\":{\"message\":\"model request failed: Invalid URL\",\"type\":\"server_error\",\"code\":\"TRANSPORT\",\"param\":null}}"
+      },
+      "bridge": {
+        "status": 502,
+        "contentType": "application/json; charset=utf-8",
+        "content": null,
+        "error": "model request failed: Invalid URL",
+        "head": "{\"error\":{\"message\":\"model request failed: Invalid URL\",\"type\":\"server_error\",\"code\":\"TRANSPORT\",\"param\":null}}"
+      }
+    },
+    {
+      "model": "opencode/deepseek-v4.1-flash-free",
+      "direct": {
+        "status": 502,
+        "contentType": "application/json",
+        "content": null,
+        "error": "model request failed: Invalid URL",
+        "head": "{\"error\":{\"message\":\"model request failed: Invalid URL\",\"type\":\"server_error\",\"code\":\"TRANSPORT\",\"param\":null}}"
+      },
+      "bridge": {
+        "status": 502,
+        "contentType": "application/json; charset=utf-8",
+        "content": null,
+        "error": "model request failed: Invalid URL",
+        "head": "{\"error\":{\"message\":\"model request failed: Invalid URL\",\"type\":\"server_error\",\"code\":\"TRANSPORT\",\"param\":null}}"
+      }
+    },
+    {
+      "model": "baidu/ernie-5.5-flash-preview:free",
+      "direct": {
+        "status": 200,
+        "contentType": "application/json",
+        "content": "Ok",
+        "error": null,
+        "head": "{\"id\":\"chatcmpl-ae29baf79d236661\",\"object\":\"chat.completion\",\"created\":1794470209,\"model\":\"baidu/ernie-5.5-flash-preview:free\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"Ok\"},\"finish_reason\":\"stop\"}],"
+      },
+      "bridge": {
+        "status": 200,
+        "contentType": "application/json; charset=utf-8",
+        "content": "ok",
+        "error": null,
+        "head": "{\"id\":\"chatcmpl-7589f90a7d196712\",\"object\":\"chat.completion\",\"created\":1794470211,\"model\":\"ofm/baidu/ernie-5.5-flash-preview:free\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"ok\"},\"finish_reason\":\"stop"
+      },
+      "free": {
+        "status": 200,
+        "contentType": "application/json; charset=utf-8",
+        "content": "OK",
+        "error": null,
+        "head": "{\"execution_id\":\"50956be4-945d-433a-a75d-8e0bf243e31d\",\"id\":\"chatcmpl-cdad0b57c9c7843e\",\"object\":\"chat.completion\",\"created\":1794470213,\"model\":\"ofm/baidu/ernie-5.5-flash-preview:free\",\"choices\":[{\"index\":0,\"message\":{\"r"
+      }
+    },
+    {
+      "model": "thinkingmachines/inkling-2-small:free",
+      "direct": {
+        "status": 429,
+        "contentType": "application/json",
+        "content": null,
+        "error": "Rate limit exceeded: limit_rpd/thinkingmachines/inkling-2-small-20261107/29add1e6-4e78-459f-bf7d-17faf77a0b44. Daily limit reached for thinkingmachines/inkling-2-small:free via Thinking Machines. Credits don't affect this cap. Add your own provider key to use your own limits: https://openrouter.ai/w",
+        "head": "{\"error\":{\"message\":\"Rate limit exceeded: limit_rpd/thinkingmachines/inkling-2-small-20261107/29add1e6-4e78-459f-bf7d-17faf77a0b44. Daily limit reached for thinkingmachines/inkling-2-small:free via Thinking Machines. Cre"
+      },
+      "bridge": {
+        "status": 429,
+        "contentType": "application/json; charset=utf-8",
+        "content": null,
+        "error": "Rate limit exceeded: limit_rpd/thinkingmachines/inkling-2-small-20261107/29add1e6-4e78-459f-bf7d-17faf77a0b44. Daily limit reached for thinkingmachines/inkling-2-small:free via Thinking Machines. Credits don't affect this cap. Add your own provider key to use your own limits: https://openrouter.ai/w",
+        "head": "{\"error\":{\"message\":\"Rate limit exceeded: limit_rpd/thinkingmachines/inkling-2-small-20261107/29add1e6-4e78-459f-bf7d-17faf77a0b44. Daily limit reached for thinkingmachines/inkling-2-small:free via Thinking Machines. Cre"
+      }
+    },
+    {
+      "model": "liquid/lfm-3-1.7b:free",
+      "direct": {
+        "status": 200,
+        "contentType": "application/json",
+        "content": "Ok.",
+        "error": null,
+        "head": "{\"id\":\"chatcmpl-d25beb19cac69d0c\",\"object\":\"chat.completion\",\"created\":1794470216,\"model\":\"liquid/lfm-3-1.7b:free\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"Ok.\"},\"finish_reason\":\"stop\"}],\"usage\":{\"p"
+      },
+      "bridge": {
+        "status": 200,
+        "contentType": "application/json; charset=utf-8",
+        "content": "OK.",
+        "error": null,
+        "head": "{\"id\":\"chatcmpl-568e0696ac6996b1\",\"object\":\"chat.completion\",\"created\":1794470218,\"model\":\"ofm/liquid/lfm-3-1.7b:free\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"OK.\"},\"finish_reason\":\"stop\"}],\"usage\""
+      },
+      "free": {
+        "status": 200,
+        "contentType": "application/json; charset=utf-8",
+        "content": "Ok.",
+        "error": null,
+        "head": "{\"execution_id\":\"30e4fcd6-c521-405f-bf44-08a933267f2d\",\"id\":\"chatcmpl-066965364dc244a4\",\"object\":\"chat.completion\",\"created\":1794470219,\"model\":\"ofm/liquid/lfm-3-1.7b:free\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assist"
+      }
+    }
+  ],
+  "bridgeHealth": {
+    "status": 200,
+    "contentType": "application/json; charset=utf-8",
+    "text": "{\"ok\":true,\"service\":\"dsh-plugin-bridge\",\"routes\":3}",
+    "json": {
+      "ok": true,
+      "service": "dsh-plugin-bridge",
+      "routes": 3
+    },
+    "content": null,
+    "error": null
+  },
+  "egressPort": {
+    "reachable": true,
+    "status": 400
+  },
+  "okCount": 2,
+  "bridgeOkCount": 2,
+  "freeOkCount": 2
+}

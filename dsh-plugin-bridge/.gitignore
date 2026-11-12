@@ -1,0 +1,7 @@
+dsh-plugin-bridge.config.json
+unified-key.txt
+*.log
+*.db
+*.db-wal
+*.exe
+*.png

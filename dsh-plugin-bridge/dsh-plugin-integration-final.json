@@ -1,0 +1,156 @@
+{
+  "at": "2026-11-12T08:37:50.863Z",
+  "health": {
+    "status": 200,
+    "routes": 3
+  },
+  "bridge": {
+    "status": 200,
+    "total": 62,
+    "workbuddy": 44,
+    "ourFreeModel": 18,
+    "samples": [
+      "wb-cn/hy4free",
+      "wb-cn/hy4std",
+      "wb-cn/hy3",
+      "wb-cn/hy3-x",
+      "wb-cn/deepseek-v4.1-flash",
+      "wb-cn/glm-5.3",
+      "wb-cn/glm-5.3-flash",
+      "wb-cn/glm-5.2"
+    ],
+    "ids": [
+      "wb-cn/hy4free",
+      "wb-cn/hy4std",
+      "wb-cn/hy3",
+      "wb-cn/hy3-x",
+      "wb-cn/deepseek-v4.1-flash",
+      "wb-cn/glm-5.3",
+      "wb-cn/glm-5.3-flash",
+      "wb-cn/glm-5.2",
+      "wb-cn/space-bunny",
+      "wb-cn/minimax-m3.1-flash",
+      "wb-cn/kimi-k3.1-pro",
+      "wb-cn/kimi-k3-1",
+      "wb-cn/kimi-k2.8-preview",
+      "wb-cn/deepseek-v4-pro",
+      "wb-cn/step-5-preview",
+      "wb-cn/mimo-v2.6-pro",
+      "wb-2/fast-model",
+      "wb-2/balanced-model",
+      "wb-2/primary-model",
+      "wb-2/hy4-preview",
+      "wb-2/hy3",
+      "wb-2/deepseek-v4.1-flash",
+      "wb-2/deepseek-v4.1-flash-sg",
+      "wb-2/gpt-6-astra",
+      "wb-2/gpt-6.1-sol",
+      "wb-2/gpt-6-sol",
+      "wb-2/gpt-6-luna",
+      "wb-2/gpt-5.6-sol",
+      "wb-2/gpt-5.6-terra",
+      "wb-2/gpt-5.6-luna",
+      "wb-2/gpt-5.5",
+      "wb-2/gpt-5.4",
+      "wb-2/grok-4.7",
+      "wb-2/gemini-3.8-flash",
+      "wb-2/glm-5.3-flash",
+      "wb-2/glm-5.3",
+      "wb-2/glm-5.2",
+      "wb-2/minimax-m3.1-flash",
+      "wb-2/kimi-k3.1-pro",
+      "wb-2/kimi-k3.1-pro-highspeed",
+      "wb-2/kimi-k3",
+      "wb-2/max-model",
+      "wb-2/hy4free",
+      "wb-2/hy4std",
+      "ofm/deepseek-v4.1-flash-free",
+      "ofm/glm-5.3-flash-free",
+      "ofm/longcat-2.5-free",
+      "ofm/iceman-free",
+      "ofm/inkling-2-small-free",
+      "ofm/flint-40b-free",
+      "ofm/opencode/nemotron-3.5-lightning-free",
+      "ofm/minimaxai/minimax-m3.1-flash",
+      "ofm/opencode/flint-40b-free",
+      "ofm/z-ai/glm-5.3-flash",
+      "ofm/stepfun-ai/step-5-preview",
+      "ofm/deepseek-ai/deepseek-v4.1-flash",
+      "ofm/opencode/glm-5.3-flash-free",
+      "ofm/opencode/nemotron-3.5-super-vl-free",
+      "ofm/opencode/deepseek-v4.1-flash-free",
+      "ofm/baidu/ernie-5.5-flash-preview:free",
+      "ofm/thinkingmachines/inkling-2-small:free",
+      "ofm/liquid/lfm-3-1.7b:free"
+    ]
+  },
+  "freeLlmApi": {
+    "status": 200,
+    "total": 383,
+    "workbuddy": 44,
+    "ourFreeModel": 18,
+    "workbuddySamples": [
+      "wb-2balanced-model",
+      "wb-2deepseek-v4.1-flash",
+      "wb-2deepseek-v4.1-flash-sg",
+      "wb-2fast-model",
+      "wb-2gemini-3.8-flash",
+      "wb-2glm-5.2",
+      "wb-2glm-5.3",
+      "wb-2glm-5.3-flash"
+    ],
+    "ourFreeModelSamples": [
+      "ofmbaiduernie-5.5-flash-previewfree",
+      "ofmdeepseek-aideepseek-v4.1-flash",
+      "ofmdeepseek-v4.1-flash-free",
+      "ofmflint-40b-free",
+      "ofmglm-5.3-flash-free",
+      "ofmiceman-free",
+      "ofminkling-2-small-free",
+      "ofmliquidlfm-3-1.7bfree"
+    ]
+  },
+  "chats": [
+    {
+      "model": "wb-cn/hy4free",
+      "status": 200,
+      "contentType": "application/json; charset=utf-8",
+      "content": "Okay, the user said \"say ok.\" At first glance, this seems like",
+      "error": null
+    },
+    {
+      "model": "wb-cnhy4free",
+      "status": 200,
+      "contentType": "application/json; charset=utf-8",
+      "content": "Okay, the user asked me to \"say ok\". That's pretty straightforward.",
+      "error": null
+    },
+    {
+      "model": "wb-2/fast-model",
+      "status": 200,
+      "contentType": "application/json; charset=utf-8",
+      "content": "ok",
+      "error": null
+    },
+    {
+      "model": "ofm/baidu/ernie-5.5-flash-preview:free",
+      "status": 200,
+      "contentType": "application/json; charset=utf-8",
+      "content": "OK",
+      "error": null
+    },
+    {
+      "model": "ofm/liquid/lfm-3-1.7b:free",
+      "status": 200,
+      "contentType": "application/json; charset=utf-8",
+      "content": "Ok! Let me know if you need anything else.",
+      "error": null
+    }
+  ],
+  "stream": {
+    "model": "wb-cn/hy4free",
+    "status": 200,
+    "contentType": "text/event-stream",
+    "head": "data: {\"id\":\"b83a7661522e4812b1d2c5e941b95274\",\"model\":\"wb-cn/hy4free\",\"object\":\"chat.completion.chunk\",\"created\":1794472669,\"choices\":[{\"index\":0,\"delta\":{\"rol"
+  }
+}

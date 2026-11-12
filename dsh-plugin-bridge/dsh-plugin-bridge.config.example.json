@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "listenHost": "127.0.0.1",
+  "listenPort": 31418,
+  "bridgeKey": "dsh-plugin-bridge-local",
+  "shims": [
+    {
+      "id": "workbuddy-cn",
+      "prefix": "wb-cn",
+      "baseUrl": "http://127.0.0.1:54001",
+      "apiKey": "CHANGE_ME_WORKBUDDY_CN_SHIM_TOKEN",
+      "ownedBy": "workbuddy"
+    },
+    {
+      "id": "workbuddy-2",
+      "prefix": "wb-2",
+      "baseUrl": "http://127.0.0.1:54002",
+      "apiKey": "CHANGE_ME_WORKBUDDY_2_SHIM_TOKEN",
+      "ownedBy": "workbuddy"
+    }
+  ],
+  "ofm": {
+    "id": "our-free-model",
+    "enabled": true,
+    "baseUrl": "http://127.0.0.1:18899",
+    "apiKey": "CHANGE_ME_OFM_FORWARD_KEY",
+    "prefix": "ofm",
+    "ownedBy": "our-free-model"
+  }
+}
