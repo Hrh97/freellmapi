@@ -14,6 +14,7 @@ import { secondsUntilNextMonth } from './key-budget.js';
 import { noteBudgetAlerts } from './budget-alerts.js';
 import { getClientContext } from '../lib/client-context.js';
 import { reserveProviderCredential } from './provider-credential.js';
+import { speechFlowCredentials } from '../providers/speechflow.js';
 import { proxyFetch } from '../lib/proxy.js';
 import { bearerAuthHeader } from '../lib/credential.js';
 import { assessProviderUrl } from '../lib/url-guard.js';
@@ -29,6 +30,7 @@ import { PLUGSKY_BASE_URL } from '../providers/plugsky.js';
 import { NOVAI_BASE_URL } from '../providers/novai.js';
 import { VarosityMediaError, varosityImage, varositySpeech, varosityVideo } from './media-varosity.js';
 import { RimeMediaError, rimeSpeech, rimeTranscription } from './media-rime.js';
+import { solariaTranscription } from './media-solaria.js';
 import { FreeTtsMediaError, freeTtsSpeech } from './media-freetts.js';
 import { VoiceGatewayMediaError, voiceGatewaySpeech, cartesiaTranscription } from './media-voice-gateways.js';
 import { cpuCanRunSharp } from '../lib/image-normalize.js';
@@ -49,7 +51,7 @@ const KEYLESS_CAPABLE = new Set(['pollinations']);
 /** Platforms with a speech-to-text adapter below. catalog-sync gates the
  *  catalog's `transcriptionModels` entries on this, the way MEDIA_PLATFORMS
  *  gates the generative-media rows. */
-export const TRANSCRIPTION_PLATFORMS = new Set(['groq', 'cloudflare', 'typhoon', 'mistral', 'cohere', 'ovh', 'freeai', 'google', 'rime', 'electronhub', 'cartesia', 'silvr']);
+export const TRANSCRIPTION_PLATFORMS = new Set(['groq', 'cloudflare', 'typhoon', 'mistral', 'cohere', 'ovh', 'freeai', 'google', 'rime', 'electronhub', 'cartesia', 'silvr', 'speechflow']);
 
 // 'transcription' rows live in media_models like the other modalities; they
 // arrive via the catalog's dedicated `transcriptionModels` array (see
@@ -279,7 +281,7 @@ async function mediaFetch(
     timeoutMs,
   );
   if (!r.ok) {
-    if (platform === 'silvr' || platform === 'electronhub') {
+    if (platform === 'silvr' || platform === 'electronhub' || platform === 'speechflow') {
       await r.body?.cancel();
       throw new MediaError(`${platform} ${modality} request failed (${r.status})`, r.status, undefined, parseRetryAfterMs(r.headers.get('retry-after')));
     }
@@ -1469,6 +1471,19 @@ export interface TranscriptionParams {
   responseFormat: string;
 }
 
+// Blob and fetch accept ArrayBuffer-backed views. Reuse the exact byte range
+// of ordinary (possibly pooled) Buffers and copy shared memory at this boundary.
+function transcriptionBytes(file: Buffer): Uint8Array<ArrayBuffer> {
+  const { buffer, byteOffset, byteLength } = file;
+  return buffer instanceof ArrayBuffer
+    ? new Uint8Array(buffer, byteOffset, byteLength)
+    : new Uint8Array(file);
+}
+
+function transcriptionBlob(p: TranscriptionParams): Blob {
+  return new Blob([transcriptionBytes(p.file)], { type: p.mimeType || 'application/octet-stream' });
+}
+
 export interface TranscriptionResult {
   platform: string;
   modelId: string;
@@ -1515,6 +1530,37 @@ function resolveTranscriptionChain(model: string | undefined, responseFormat: st
   return chain;
 }
 
+// This is one async ASR service, not a separate model for every language.
+async function speechFlowTranscription(model: string, key: string | null, p: TranscriptionParams) {
+  const headers = speechFlowCredentials(key ?? '');
+  if (!headers) throw new MediaError('SpeechFlow requires keyId:keySecret', 401);
+  if (model !== 'speechflow-asr' || !['text', 'json', 'verbose_json'].includes(p.responseFormat) || p.prompt || (p.temperature ?? 0) !== 0)
+    throw new MediaError('Unsupported SpeechFlow model or transcription options', 400);
+  const lang = (p.language ?? 'en').toLowerCase();
+  if (!/^[a-z]{2}$/.test(lang)) throw new MediaError('SpeechFlow requires a two-letter language code', 400);
+  const base = 'https://api.speechflow.io/asr/file/v1/';
+  const form = new FormData();
+  form.set('file', transcriptionBlob(p),
+    p.filename.replace(/[^a-z0-9._-]/gi, '_').slice(-128) || 'audio.wav');
+  const deadline = Date.now() + 120_000;
+  async function request(path: string, init: RequestInit) {
+    const remaining = deadline - Date.now();
+    if (remaining <= 0) throw new MediaError('SpeechFlow transcription timed out', 504);
+    const r = await mediaFetch(base + path, 'speechflow', 'transcription', { ...init, headers: headers!, redirect: 'error' }, Math.min(remaining, 30_000));
+    return await boundedMediaJson(r, 4 * 1024 * 1024) as { code?: number; taskId?: unknown; result?: unknown } | null;
+  }
+  const job = await request('create?lang=' + lang, { method: 'POST', body: form });
+  if (job?.code !== 10000 || typeof job.taskId !== 'string' || !/^[A-Za-z0-9_-]{1,160}$/.test(job.taskId))
+    throw new MediaError('SpeechFlow did not accept the transcription job', 502);
+  const query = 'query?' + new URLSearchParams({ taskId: job.taskId, resultType: '4' });
+  for (;;) {
+    const state = await request(query, { method: 'GET' });
+    if (state?.code === 11000 && typeof state.result === 'string') return { text: state.result, language: lang };
+    if (state?.code !== 11001) throw new MediaError('SpeechFlow returned an unsuccessful or malformed transcription', 502);
+    await new Promise(resolve => setTimeout(resolve, 3000));
+  }
+}
+
 async function callTranscriptionProvider(
   m: SttCandidate,
   credential: ProviderCredential,
@@ -1522,6 +1568,7 @@ async function callTranscriptionProvider(
 ): Promise<Omit<TranscriptionResult, 'platform' | 'modelId'>> {
   const key = credential.key;
   switch (m.platform) {
+    case 'speechflow': return speechFlowTranscription(m.modelId, key, p);
     case 'silvr': {
       if (!key) throw new MediaError('SilvR API key required', 401);
       if (!['whisper-large-v3-turbo', 'whisper-large-v3'].includes(m.modelId)) throw new MediaError('Unknown SilvR transcription model', 400);
@@ -1531,7 +1578,7 @@ async function callTranscriptionProvider(
       if (p.language) form.append('language', p.language);
       if (p.prompt) form.append('prompt', p.prompt);
       if (p.temperature !== undefined) form.append('temperature', String(p.temperature));
-      form.append('file', new Blob([new Uint8Array(p.file)], { type: p.mimeType || 'application/octet-stream' }), p.filename.replace(/[^a-z0-9._-]/gi, '_').slice(0, 128) || 'audio.wav');
+      form.append('file', transcriptionBlob(p), p.filename.replace(/[^a-z0-9._-]/gi, '_').slice(0, 128) || 'audio.wav');
       const r = await mediaFetch(`${SILVR_BASE_URL}/audio/transcriptions`, 'silvr', 'transcription', {
         method: 'POST', redirect: 'error', headers: bearerAuthHeader(key), body: form,
       });
@@ -1562,6 +1609,7 @@ async function callTranscriptionProvider(
     case 'cohere':
     case 'electronhub':
     case 'ovh': {
+      if (m.platform === 'ovh' && m.modelId === 'solaria-3') return nativeMediaResult(solariaTranscription(p));
       if (m.platform === 'electronhub' && !['voxtral-mini-2602', 'deepgram-nova-3'].includes(m.modelId)) throw new MediaError('Unknown ElectronHub transcription model', 400);
       if (m.platform === 'freeai' && m.modelId !== 'whisper') throw new MediaError('Unknown Free.ai transcription model', 400);
       if (m.platform === 'ovh' && !['whisper-large-v3', 'whisper-large-v3-turbo'].includes(m.modelId)) throw new MediaError('Unknown OVH transcription model', 400);
@@ -1578,7 +1626,7 @@ async function callTranscriptionProvider(
         if (p.temperature !== undefined) form.append('temperature', String(p.temperature));
       }
       if (m.platform === 'cohere' || p.language) form.append('language', p.language || 'en');
-      form.append('file', new Blob([p.file], { type: p.mimeType || 'application/octet-stream' }), p.filename);
+      form.append('file', transcriptionBlob(p), p.filename);
       const r = await mediaFetch(url, m.platform, 'transcription', {
         method: 'POST', redirect: 'error', headers: m.platform === 'ovh' ? {} : bearerAuthHeader(key), body: form,
       });
@@ -1592,7 +1640,7 @@ async function callTranscriptionProvider(
       // Voxtral accepts multipart file/model, language and temperature, not
       // Whisper's prompt or response_format. Normalize JSON/text locally.
       const form = new FormData();
-      form.append('file', new Blob([p.file], { type: p.mimeType || 'application/octet-stream' }), p.filename);
+      form.append('file', transcriptionBlob(p), p.filename);
       form.append('model', m.modelId);
       if (p.language) form.append('language', p.language);
       if (p.temperature !== undefined) form.append('temperature', String(p.temperature));
@@ -1609,7 +1657,7 @@ async function callTranscriptionProvider(
       // Do not forward Whisper-only options or claim native subtitle support.
       // The route derives text/JSON response formats from this normalized result.
       const form = new FormData();
-      form.append('file', new Blob([p.file], { type: p.mimeType || 'application/octet-stream' }), p.filename);
+      form.append('file', transcriptionBlob(p), p.filename);
       form.append('model', m.modelId);
       const r = await mediaFetch(`${TYPHOON_BASE_URL}/audio/transcriptions`, 'typhoon', 'transcription', {
         method: 'POST',
@@ -1626,7 +1674,7 @@ async function callTranscriptionProvider(
       // only the base URL and the optional key differ.
       if (!credential.baseUrl) throw new MediaError('custom transcription provider is missing base_url', 500);
       const form = new FormData();
-      form.append('file', new Blob([p.file], { type: p.mimeType || 'application/octet-stream' }), p.filename);
+      form.append('file', transcriptionBlob(p), p.filename);
       form.append('model', m.modelId);
       if (p.language) form.append('language', p.language);
       if (p.prompt) form.append('prompt', p.prompt);
@@ -1649,7 +1697,7 @@ async function callTranscriptionProvider(
       // Groq's OpenAI-compatible audio endpoint takes multipart form data.
       // Never set Content-Type by hand — FormData supplies the boundary.
       const form = new FormData();
-      form.append('file', new Blob([p.file], { type: p.mimeType || 'application/octet-stream' }), p.filename);
+      form.append('file', transcriptionBlob(p), p.filename);
       form.append('model', m.modelId);
       if (p.language) form.append('language', p.language);
       if (p.prompt) form.append('prompt', p.prompt);
@@ -1682,7 +1730,7 @@ async function callTranscriptionProvider(
         : {
             method: 'POST',
             headers: { 'Content-Type': 'application/octet-stream', Authorization: `Bearer ${token}` },
-            body: p.file,
+            body: transcriptionBytes(p.file),
           };
       // Billed per audio minute; ~1 MB a minute is a generous guess for the
       // compressed formats clients send (an uncompressed WAV overestimates).
